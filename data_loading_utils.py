@@ -83,7 +83,29 @@ def load_data_from_directory(path_to_directory, sampling_rate):
 
     return X, Y, agg_df
 
-def get_train_test_split(X, Y, test_fold=10, validation=False):
+
+# function to do all data cleaning and create new column 'diagnostic_binary' and save the cleaned data to the folder data
+def preprocess_data(X, Y):
+    """
+    Preprocess the data by removing samples with missing values in the diagnostic superclass categories and creating a new column 'diagnostic_binary'.
+    """
+    # create new column for the superclass aggregation in 2 classes 'MI' and 'NORMAL'
+    Y['diagnostic_binary'] = Y['diagnostic_superclass'].apply(lambda x: 'MI' if 'MI' in x else 'NORMAL')
+
+    # drop the rows with missing values in the labels 'diagnostic_superclass'
+    Y_clean = Y[Y['diagnostic_superclass'].apply(lambda x: len(x)) > 0]
+
+    # drop columns that are not needed
+    #Y_clean = Y_clean.drop(['diagnostic_superclass'], axis=1)
+
+    # save the cleaned data to the folder data
+    Y_clean.to_csv('data/Y_clean.csv', index=False)
+    np.save('data/X.npy', X)
+
+    return X, Y_clean
+
+
+def get_train_test_split(X, Y_clean, test_fold=10, validation=False):
     """
     Splits the data into training, test, and optionally validation sets based on the stratification fold.
 
@@ -108,15 +130,15 @@ def get_train_test_split(X, Y, test_fold=10, validation=False):
     validation_folds = [8, 9]
     # From the documentation of the dataset, they recommend for the test fold to be 10 and 8 and 9 as validation.
 
-    X_train = X[np.where((Y.strat_fold != test_fold) & (~Y.strat_fold.isin(validation_folds)))]
-    y_train = Y[(Y.strat_fold != test_fold) & (~Y.strat_fold.isin(validation_folds))].diagnostic_superclass
+    X_train = X[np.where((Y_clean.strat_fold != test_fold) & (~Y_clean.strat_fold.isin(validation_folds)))]
+    y_train = Y_clean[(Y_clean.strat_fold != test_fold) & (~Y_clean.strat_fold.isin(validation_folds))].diagnostic_binary
 
-    X_test = X[np.where(Y.strat_fold == test_fold)]
-    y_test = Y[Y.strat_fold == test_fold].diagnostic_superclass
+    X_test = X[np.where(Y_clean.strat_fold == test_fold)]
+    y_test = Y_clean[Y_clean.strat_fold == test_fold].diagnostic_binary
 
     if validation:
-        X_val = X[np.where(Y.strat_fold.isin(validation_folds))]
-        y_val = Y[Y.strat_fold.isin(validation_folds)].diagnostic_superclass
+        X_val = X[np.where(Y_clean.strat_fold.isin(validation_folds))]
+        y_val = Y_clean[Y_clean.strat_fold.isin(validation_folds)].diagnostic_binary
 
         return X_train, X_test, y_train, y_test, X_val, y_val
     else:
