@@ -48,6 +48,31 @@ def aggregate_diagnostic(y_dic, agg_df):
             tmp.append(agg_df.loc[key].diagnostic_class)
     return list(set(tmp))
 
+def find_max_condition(condition_dict):
+    if isinstance(condition_dict, dict):
+        max_condition = max(condition_dict, key=condition_dict.get)  # Find the key with the maximum value
+        return max_condition, condition_dict[max_condition]
+    else:
+        return None
+
+def filter_by_confidence(dataframe, column_name, threshold=50.0):
+    """
+    Filters the DataFrame to only include rows where the highest diagnostic confidence is above a specified threshold.
+
+    Parameters:
+    dataframe (pd.DataFrame): The DataFrame containing the rows to filter.
+    column_name (str): The column name where each entry is a tuple containing the diagnostic condition and its score.
+    threshold (float, optional): The confidence threshold for keeping rows. Defaults to 50.0.
+
+    Returns:
+    pd.DataFrame: A DataFrame filtered to only include rows with diagnostic confidence above the threshold.
+
+    filtered_df = filter_by_confidence(df, 'Highest_Score_Condition', 50)
+    """
+    # Filter rows based on the second element in the tuple (score) being above the threshold
+    filtered_df = dataframe[dataframe[column_name].apply(lambda x: x[1] >= threshold if x else False)]
+
+    return filtered_df
 
 def load_data_from_directory(path_to_directory, sampling_rate):
     """
@@ -74,6 +99,11 @@ def load_data_from_directory(path_to_directory, sampling_rate):
 
     # Drop duplicate records
     Y.drop_duplicates(["patient_id"])
+
+    # Select highest confidence condition for each record
+    Y['scp_codes'] = Y['scp_codes'].apply(find_max_condition)
+    #pending
+    Y = filter_by_confidence(Y)
 
     # Load raw signal data
     X = load_raw_data(Y, sampling_rate, path_to_directory)
