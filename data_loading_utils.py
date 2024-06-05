@@ -72,6 +72,9 @@ def load_data_from_directory(path_to_directory, sampling_rate):
     Y = pd.read_csv(path_to_directory + 'ptbxl_database.csv', index_col='ecg_id')
     Y.scp_codes = Y.scp_codes.apply(lambda x: ast.literal_eval(x))
 
+    # Drop duplicate records
+    Y.drop_duplicates(["patient_id"])
+
     # Load raw signal data
     X = load_raw_data(Y, sampling_rate, path_to_directory)
 
