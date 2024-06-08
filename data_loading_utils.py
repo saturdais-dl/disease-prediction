@@ -102,9 +102,7 @@ def load_data_from_directory(path_to_directory, sampling_rate):
 
     # Select highest confidence condition for each record
     Y['scp_codes'] = Y['scp_codes'].apply(find_max_condition)
-    #pending
-    Y = filter_by_confidence(Y)
-
+  
     # Load raw signal data
     X = load_raw_data(Y, sampling_rate, path_to_directory)
 
