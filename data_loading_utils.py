@@ -3,6 +3,7 @@ import numpy as np
 import wfdb
 import ast
 
+
 def load_raw_data(df, sampling_rate, path):
     """
     Loads raw ECG data from the specified files and returns it as a numpy array.
@@ -26,6 +27,7 @@ def load_raw_data(df, sampling_rate, path):
     data = np.array([signal for signal, meta in data])
     return data
 
+
 def aggregate_diagnostic(y_dic, agg_df):
     """
     Aggregates diagnostic information from the provided diagnostic codes using the aggregation DataFrame.
@@ -48,12 +50,16 @@ def aggregate_diagnostic(y_dic, agg_df):
             tmp.append(agg_df.loc[key].diagnostic_class)
     return list(set(tmp))
 
+
 def find_max_condition(condition_dict):
     if isinstance(condition_dict, dict):
-        max_condition = max(condition_dict, key=condition_dict.get)  # Find the key with the maximum value
-        return max_condition, condition_dict[max_condition]
+        max_condition = max(
+            condition_dict, key=condition_dict.get
+        )  # Find the key with the maximum value
+        return {max_condition: condition_dict[max_condition]}
     else:
         return None
+
 
 def filter_by_confidence(dataframe, column_name, threshold=50.0):
     """
@@ -70,9 +76,12 @@ def filter_by_confidence(dataframe, column_name, threshold=50.0):
     filtered_df = filter_by_confidence(df, 'Highest_Score_Condition', 50)
     """
     # Filter rows based on the second element in the tuple (score) being above the threshold
-    filtered_df = dataframe[dataframe[column_name].apply(lambda x: x[1] >= threshold if x else False)]
+    filtered_df = dataframe[
+        dataframe[column_name].apply(lambda x: x[1] >= threshold if x else False)
+    ]
 
     return filtered_df
+
 
 def load_data_from_directory(path_to_directory, sampling_rate):
     """
@@ -94,23 +103,30 @@ def load_data_from_directory(path_to_directory, sampling_rate):
     X, Y, agg_df = load_data_from_directory(path, sampling_rate)
     """
     # Load and convert annotation data
-    Y = pd.read_csv(path_to_directory + 'ptbxl_database.csv', index_col='ecg_id')
+    Y = pd.read_csv(path_to_directory + "ptbxl_database.csv", index_col="ecg_id")
     Y.scp_codes = Y.scp_codes.apply(lambda x: ast.literal_eval(x))
 
-    # Drop duplicate records
-    Y.drop_duplicates(["patient_id"])
+    # No removal of duplicate records as it is a second observation
+    # Y.drop_duplicates(["patient_id"])
 
     # Select highest confidence condition for each record
-    Y['scp_codes'] = Y['scp_codes'].apply(find_max_condition)
-  
+    Y["scp_codes"] = Y["scp_codes"].apply(find_max_condition)
+
+    threshold = 70
+    Y.to_csv("test.csv")
+    # Filter the DataFrame to drop rows where the max value is less than the threshold
+    Y = Y[Y["scp_codes"].apply(lambda x: list(x.values())[0] if x else 0) >= threshold]
+
     # Load raw signal data
     X = load_raw_data(Y, sampling_rate, path_to_directory)
 
     # Load scp_statements.csv for diagnostic aggregation
-    agg_df = pd.read_csv(path_to_directory + 'scp_statements.csv', index_col=0)
+    agg_df = pd.read_csv(path_to_directory + "scp_statements.csv", index_col=0)
     agg_df = agg_df[agg_df.diagnostic == 1]
 
-    Y['diagnostic_superclass'] = Y.scp_codes.apply(lambda x: aggregate_diagnostic(x, agg_df))
+    Y["diagnostic_superclass"] = Y.scp_codes.apply(
+        lambda x: aggregate_diagnostic(x, agg_df)
+    )
 
     return X, Y, agg_df
 
@@ -121,17 +137,19 @@ def preprocess_data(X, Y):
     Preprocess the data by removing samples with missing values in the diagnostic superclass categories and creating a new column 'diagnostic_binary'.
     """
     # create new column for the superclass aggregation in 2 classes 'MI' and 'NORMAL'
-    Y['diagnostic_binary'] = Y['diagnostic_superclass'].apply(lambda x: 'MI' if 'MI' in x else 'NORMAL')
+    Y["diagnostic_binary"] = Y["diagnostic_superclass"].apply(
+        lambda x: "MI" if "MI" in x else "NORMAL"
+    )
 
     # drop the rows with missing values in the labels 'diagnostic_superclass'
-    Y_clean = Y[Y['diagnostic_superclass'].apply(lambda x: len(x)) > 0]
+    Y_clean = Y[Y["diagnostic_superclass"].apply(lambda x: len(x)) > 0]
 
     # drop columns that are not needed
-    #Y_clean = Y_clean.drop(['diagnostic_superclass'], axis=1)
+    # Y_clean = Y_clean.drop(['diagnostic_superclass'], axis=1)
 
     # save the cleaned data to the folder data
-    Y_clean.to_csv('data/Y_clean.csv', index=False)
-    np.save('data/X.npy', X)
+    Y_clean.to_csv("data/Y_clean.csv", index=False)
+    np.save("data/X.npy", X)
 
     return X, Y_clean
 
@@ -161,8 +179,15 @@ def get_train_test_split(X, Y_clean, test_fold=10, validation=False):
     validation_folds = [8, 9]
     # From the documentation of the dataset, they recommend for the test fold to be 10 and 8 and 9 as validation.
 
-    X_train = X[np.where((Y_clean.strat_fold != test_fold) & (~Y_clean.strat_fold.isin(validation_folds)))]
-    y_train = Y_clean[(Y_clean.strat_fold != test_fold) & (~Y_clean.strat_fold.isin(validation_folds))].diagnostic_binary
+    X_train = X[
+        np.where(
+            (Y_clean.strat_fold != test_fold)
+            & (~Y_clean.strat_fold.isin(validation_folds))
+        )
+    ]
+    y_train = Y_clean[
+        (Y_clean.strat_fold != test_fold) & (~Y_clean.strat_fold.isin(validation_folds))
+    ].diagnostic_binary
 
     X_test = X[np.where(Y_clean.strat_fold == test_fold)]
     y_test = Y_clean[Y_clean.strat_fold == test_fold].diagnostic_binary
