@@ -10,8 +10,8 @@
 
 
 ## Dataset
-The model is trained using the [**PTB-XL dataset**](https://physionet.org/content/ptb-xl/1.0.3/), which includes 21,837 clinical ECG records from 18,885 patients. Each record is a 12-lead ECG of 10 seconds duration.
 
+For training the model, we utilized the [**PTB-XL dataset**](https://physionet.org/content/ptb-xl/1.0.3/), which comprises 21,837 clinical ECG records from 18,885 patients. Each record consists of 12-lead ECGs lasting 10 seconds.
 
 ## File descriptions
 
@@ -33,14 +33,14 @@ The model is trained using the [**PTB-XL dataset**](https://physionet.org/conten
 
 2. Run the application:
     ```bash
-    python app.py
+    streamlit run app.py
     ```
 
 2. Upload an ECG image to get the prediction.
 
 ## Authors
 
-This project was created by a team from the 7th edition of Saturdays.AI:
+This project was created by a team from the 7th edition of Saturdays.AI Madrid:
 
 - [Gabriela Calzadilla Rodriguez](https://www.linkedin.com/in/gabrielacalzadilla/)
 - [Galyna Chupirova](https://www.linkedin.com/in/galyna-chupirova-447b6142/)
