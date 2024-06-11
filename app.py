@@ -3,11 +3,22 @@ from tensorflow.keras.models import load_model
 from ecg import ECG
 import matplotlib.pyplot as plt
 
+# Añadir una imagen en la parte superior de la aplicación
+st.image("/Users/karlalamus/infarction-prediction/img.png", use_column_width=True)
+
+# Título de la aplicación
+st.title("Predicción de Infarto de Miocardio mediante ECG")
+
+# Descripción breve
+st.markdown("""
+Esta aplicación permite cargar una imagen de un electrocardiograma (ECG), procesarla y utilizar un modelo de aprendizaje automático para predecir la posibilidad de un infarto de miocardio.
+""")
+
 # Initialize ECG object
 ecg = ECG()
 
 # Requires model in local repository
-model = load_model("models/cnn_model.h5")
+model = load_model("/Users/karlalamus/infarction-prediction/models/simple_model.h5")
 
 # Upload image
 uploaded_file = st.file_uploader("Choose a file", type=["jpg", "jpeg", "png"])
