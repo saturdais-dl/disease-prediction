@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 ecg = ECG()
 
 # Requires model in local repository
-model = load_model("./cnn_model.h5")
+model = load_model("models/cnn_model.h5")
 
 # Upload image
 uploaded_file = st.file_uploader("Choose a file", type=["jpg", "jpeg", "png"])

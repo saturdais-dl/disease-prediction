@@ -1,0 +1,19 @@
+# Ignore the data files
+data/
+# Ignore the virtual environment
+dis/
+# Ignore Python cache files
+*.pyc
+__pycache__/
+# Ignore Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore the Mac OS X Finder metadata files
+.idea
+.DS_Store
+
+# Ignore the the model training experiments and the model tuner
+testing/
+cnn_tuner/
+
+.gitignore

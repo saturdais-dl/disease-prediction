@@ -5,10 +5,12 @@ attrs==23.2.0
 blinker==1.8.2
 cachetools==5.3.3
 certifi==2024.6.2
+cffi==1.16.0
 charset-normalizer==3.3.2
 click==8.1.7
 contourpy==1.2.1
 cycler==0.12.1
+ecg-plot==0.2.8
 flatbuffers==24.3.25
 fonttools==4.53.0
 gast==0.5.4
@@ -43,6 +45,7 @@ pandas==2.2.2
 pillow==10.3.0
 protobuf==4.25.3
 pyarrow==16.1.0
+pycparser==2.22
 pydeck==0.9.1
 Pygments==2.18.0
 pyparsing==3.1.2
@@ -55,8 +58,10 @@ rpds-py==0.18.1
 scikit-image==0.23.2
 scikit-learn==1.5.0
 scipy==1.13.1
+seaborn==0.13.2
 six==1.16.0
 smmap==5.0.1
+soundfile==0.12.1
 streamlit==1.35.0
 tenacity==8.3.0
 tensorboard==2.16.2
@@ -73,4 +78,5 @@ typing_extensions==4.12.2
 tzdata==2024.1
 urllib3==2.2.1
 Werkzeug==3.0.3
+wfdb==4.1.2
 wrapt==1.16.0
