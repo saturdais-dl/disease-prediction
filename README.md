@@ -33,19 +33,18 @@ To run the Dockerized version of the project, follow these steps:
 
 1. Ensure you have Docker installed: If you don't have Docker installed, you can download and install it from [Docker's official website](https://www.docker.com/get-started/).
 
-2. Navigate to the root directory of your project.
    
-3. Build the Docker image: From the root directory, run:
+2. Pull the Docker image from Docker Hub:
   ```bash
-  docker build -t infarction-prediction -f Docker/Dockerfile .
+  docker pull gala1812/infarction-prediction:latest
   ```
 
-4. Run the Docker container:
+3. Run the Docker container:
   ```bash
-  docker run -p 8501:8501 infarction-prediction
+  docker run -p 8501:8501 gala1812/infarction-prediction:latest
   ```
 
-5. Access the application: Open your web browser and navigate to http://localhost:8501.
+4. Access the application: Open your web browser and navigate to http://localhost:8501.
   You should see the Streamlit application interface where you can upload an ECG image to get the prediction.
 
 ### Without Docker
