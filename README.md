@@ -26,6 +26,29 @@ For training the model, we utilized the [**PTB-XL dataset**](https://physionet.o
 
 ## How to run the project
 
+### Using Docker
+
+To run the Dockerized version of the project, follow these steps:
+
+1. Ensure you have Docker installed: If you don't have Docker installed, you can download and install it from [Docker's official website](https://www.docker.com/get-started/).
+
+2. Navigate to the root directory of your project.
+   
+3. Build the Docker image: From the root directory, run:
+  ```bash
+  docker build -t infarction-prediction -f Docker/Dockerfile .
+  ```
+
+4. Run the Docker container:
+  ```bash
+  docker run -p 8501:8501 infarction-prediction
+  ```
+
+5. Access the application: Open your web browser and navigate to http://localhost:8501.
+  You should see the Streamlit application interface where you can upload an ECG image to get the prediction.
+
+### Without Docker
+
 1. Install the required libraries:
     ```bash
     pip install -r requirements.txt
