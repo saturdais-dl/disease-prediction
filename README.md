@@ -21,6 +21,7 @@ For training the model, we utilized the [**PTB-XL dataset**](https://physionet.o
 - **models/standard_scaler.pkl**: Data normalizer
 - **models/cnn_model.h5**: Trained CNN model
 - **app.py**: Interface for predicting infarction by uploading an ECG image
+- **ecg.py**: A set of functions for processing ECG images and predicting myocardial infarction
 - **requirements.txt**: Required libraries for running the project
 
 
