@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="1200"  src="https://imagizer.imageshack.com/img922/7820/W5kxKY.png" alt="infarction prediction banner">
+  <img width="1200"  src="https://imagizer.imageshack.com/img923/6061/5ZhKpP.jpg" alt="infarction prediction banner">
 </p>
 
 # Infarction Prediction
@@ -60,6 +60,13 @@ To run the Dockerized version of the project, follow these steps:
     ```
 
 2. Upload an ECG image to get the prediction.
+
+### Try it on your phone
+
+Access the application: open your phone's web browser and navigate to:
+https://infarction-prediction-saturdays.streamlit.app/
+
+You should see the responsive Streamlit app interface, where you can upload an image or take a mobile photo of an ECG to get the prediction.
 
 ## Authors
 
